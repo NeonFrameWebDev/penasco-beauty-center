@@ -43,9 +43,11 @@
   // ── Hair dryer geometry ───────────────────────────────────
   function geom() {
     const mobile = W < 700;
-    const u  = clamp(Math.min(W, H) * 0.155, 38, 118);
-    const cx = mobile ? W * 0.62 : W * 0.86;
-    const cy = mobile ? H * 0.26 : H * 0.44;
+    const u  = mobile
+      ? clamp(Math.min(W, H) * 0.110, 28, 62)
+      : clamp(Math.min(W, H) * 0.155, 38, 118);
+    const cx = mobile ? W * 0.74 : W * 0.86;
+    const cy = mobile ? H * 0.18 : H * 0.44;
     const bw = u * 2.1;
     const bh = u * 0.70;
     const nr = u * 0.72;
@@ -59,9 +61,11 @@
   // ── Nail polish bottle geometry ───────────────────────────
   function geomNail() {
     const mobile = W < 700;
-    const u   = clamp(Math.min(W, H) * 0.092, 20, 68);
-    const cx  = mobile ? W * 0.16 : W * 0.10;
-    const cy  = mobile ? H * 0.36 : H * 0.57;
+    const u   = mobile
+      ? clamp(Math.min(W, H) * 0.075, 16, 48)
+      : clamp(Math.min(W, H) * 0.092, 20, 68);
+    const cx  = mobile ? W * 0.18 : W * 0.10;
+    const cy  = mobile ? H * 0.22 : H * 0.57;
     const bw  = u * 1.08;
     const bh  = u * 2.45;
     const nkw = u * 0.48;
