@@ -455,9 +455,9 @@ nav.site-nav.nav-scrolled {
 
 @media (min-width: 1024px) {
   .hero-content {
-    max-width: 60%;
+    max-width: 68%;
     margin-left: 0;
-    padding-left: clamp(180px, 26vw, 400px);
+    padding-left: clamp(140px, 22vw, 320px);
   }
 }
 
