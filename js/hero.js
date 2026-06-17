@@ -3,7 +3,7 @@
 /* ============================================================
    PENASCO BEAUTY CENTER -- "The Blowout" animated hero
    Right: rose-gold hair dryer blowing wisps & air particles
-   Left:  nail polish bottle opening with glitter sparkles
+   Left:  red nail polish bottle opening with glitter sparkles
    Pure 2D canvas. Honors prefers-reduced-motion.
    ============================================================ */
 
@@ -14,6 +14,7 @@
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // ── Palette ───────────────────────────────────────────────
+  // Hair dryer
   const ROSE    = [184, 92,  114];
   const ROSE_LT = [224, 148, 168];
   const ROSE_DK = [92,  43,  68 ];
@@ -23,6 +24,10 @@
   const PLUM_MD = [58,  26,  48 ];
   const WHITE   = [255, 248, 244];
   const BLUSH   = [238, 180, 196];
+  // Nail polish bottle
+  const RED     = [210,  22,  22];
+  const RED_LT  = [238,  78,  68];
+  const RED_DK  = [138,   8,   8];
 
   // ── State ─────────────────────────────────────────────────
   let W = 0, H = 0, DPR = 1;
@@ -55,14 +60,14 @@
   function geomNail() {
     const mobile = W < 700;
     const u   = clamp(Math.min(W, H) * 0.092, 20, 68);
-    const cx  = mobile ? W * 0.20 : W * 0.13;
+    const cx  = mobile ? W * 0.28 : W * 0.22;
     const cy  = mobile ? H * 0.30 : H * 0.50;
     const bw  = u * 1.08;
     const bh  = u * 2.45;
     const nkw = u * 0.48;
     const nkh = u * 0.60;
-    const cw  = u * 0.60;
-    const ch  = u * 0.90;
+    const cw  = u * 0.62;
+    const ch  = u * 0.92;
     const bTop  = cy - bh / 2;
     const bBot  = cy + bh / 2;
     const nkTop = bTop - nkh;
@@ -115,15 +120,16 @@
   }
 
   function spawnNailPart(gn) {
+    const cols = [RED_LT, GOLD_LT, WHITE];
     return {
       x:    gn.cx + rand(-gn.nkw * 0.35, gn.nkw * 0.35),
       y:    gn.nkTop,
-      vx:   rand(-0.80, 0.80),
-      vy:   -rand(0.55, 2.0),
+      vx:   rand(-0.85, 0.85),
+      vy:   -rand(0.60, 2.10),
       age:  0,
       life: rand(1.0, 2.6),
       size: rand(1.6, 4.0),
-      col:  rand(0, 1) < 0.52 ? ROSE_LT : (rand(0, 1) < 0.5 ? GOLD_LT : BLUSH),
+      col:  cols[Math.floor(rand(0, cols.length))],
       rot:  rand(0, Math.PI),
     };
   }
@@ -171,125 +177,139 @@
   // ── Nail polish bottle ────────────────────────────────────
   function drawNailPolish(gn, capLift) {
     const { cx, u, bw, bh, nkw, nkh, cw, ch, bTop, bBot, nkTop } = gn;
+    const colH       = Math.max(4, u * 0.09);
+    const collarTopY = nkTop - colH;
 
-    // Ambient glow behind bottle
-    const amb = ctx.createRadialGradient(cx, bTop + bh * 0.38, 0, cx, bTop + bh * 0.38, bw * 3.0);
-    amb.addColorStop(0, rgba(ROSE, 0.28));
-    amb.addColorStop(1, rgba(ROSE, 0));
+    // Ambient glow
+    const amb = ctx.createRadialGradient(cx, bTop + bh * 0.38, 0, cx, bTop + bh * 0.38, bw * 3.4);
+    amb.addColorStop(0, rgba(RED, 0.28));
+    amb.addColorStop(1, rgba(RED, 0));
     ctx.fillStyle = amb;
-    ctx.fillRect(cx - bw * 3.0, bTop - bh * 0.5, bw * 6.0, bh * 3.0);
+    ctx.fillRect(cx - bw * 3.4, bTop - u, bw * 6.8, bh + u * 4);
 
-    // -- Bottle body --
-    const bodyG = ctx.createLinearGradient(cx - bw / 2, 0, cx + bw / 2, 0);
-    bodyG.addColorStop(0,    rgba(ROSE_DK, 0.92));
-    bodyG.addColorStop(0.30, rgba(ROSE,    0.96));
-    bodyG.addColorStop(0.62, rgba(ROSE_LT, 0.90));
-    bodyG.addColorStop(1,    rgba(ROSE_DK, 0.92));
-    ctx.fillStyle = bodyG;
+    // -- Glass bottle body --
+    // Subtle glass tint (walls look like crystal)
+    const glassG = ctx.createLinearGradient(cx - bw / 2, 0, cx + bw / 2, 0);
+    glassG.addColorStop(0,    rgba([210, 180, 185], 0.38));
+    glassG.addColorStop(0.45, rgba([230, 205, 210], 0.12));
+    glassG.addColorStop(1,    rgba([210, 180, 185], 0.38));
+    ctx.fillStyle = glassG;
     rrect(cx - bw / 2, bTop, bw, bh, bw * 0.26);
     ctx.fill();
 
-    // Liquid fill (translucent interior)
-    const liqG = ctx.createLinearGradient(0, bTop + bh * 0.12, 0, bBot - bh * 0.06);
-    liqG.addColorStop(0, rgba(ROSE_LT, 0.50));
-    liqG.addColorStop(1, rgba(ROSE_DK, 0.70));
+    // Red liquid inside (inset from glass walls, air gap at top)
+    const liqTop = bTop + bh * 0.11;
+    const liqG   = ctx.createLinearGradient(cx - bw / 2 + 3, 0, cx + bw / 2 - 3, 0);
+    liqG.addColorStop(0,    rgba(RED_DK, 0.97));
+    liqG.addColorStop(0.30, rgba(RED,    0.98));
+    liqG.addColorStop(0.68, rgba(RED_LT, 0.92));
+    liqG.addColorStop(1,    rgba(RED_DK, 0.97));
     ctx.fillStyle = liqG;
-    rrect(cx - bw / 2 + 4, bTop + bh * 0.12, bw - 8, bh * 0.82, bw * 0.18);
+    rrect(cx - bw / 2 + 3, liqTop, bw - 6, bBot - liqTop - 6, bw * 0.20);
     ctx.fill();
 
     // Glass highlight -- left edge stripe
-    const hlG = ctx.createLinearGradient(cx - bw / 2, 0, cx - bw / 2 + bw * 0.34, 0);
-    hlG.addColorStop(0, rgba(WHITE, 0.40));
+    const hlG = ctx.createLinearGradient(cx - bw / 2, 0, cx - bw / 2 + bw * 0.40, 0);
+    hlG.addColorStop(0, rgba(WHITE, 0.60));
     hlG.addColorStop(1, rgba(WHITE, 0));
     ctx.fillStyle = hlG;
-    rrect(cx - bw / 2 + 3, bTop + bh * 0.09, bw * 0.20, bh * 0.68, 4);
+    rrect(cx - bw / 2 + 2, bTop + bh * 0.08, bw * 0.17, bh * 0.66, 3);
     ctx.fill();
 
-    // Small secondary shimmer (mid-right)
-    ctx.fillStyle = rgba(WHITE, 0.13);
-    rrect(cx + bw * 0.12, bTop + bh * 0.34, bw * 0.11, bh * 0.20, 3);
+    // Secondary right glint
+    ctx.fillStyle = rgba(WHITE, 0.14);
+    rrect(cx + bw * 0.24, bTop + bh * 0.30, bw * 0.09, bh * 0.22, 2);
     ctx.fill();
+
+    // Glass outline
+    ctx.save();
+    ctx.strokeStyle = rgba(WHITE, 0.36);
+    ctx.lineWidth   = 1.2;
+    rrect(cx - bw / 2, bTop, bw, bh, bw * 0.26);
+    ctx.stroke();
+    ctx.restore();
 
     // Gold base band
     ctx.fillStyle = rgb(GOLD);
-    ctx.fillRect(cx - bw / 2 + 3, bBot - 8, bw - 6, 8);
+    ctx.fillRect(cx - bw / 2 + 2, bBot - 7, bw - 4, 7);
 
-    // -- Neck --
-    const nkG = ctx.createLinearGradient(cx - nkw / 2, 0, cx + nkw / 2, 0);
-    nkG.addColorStop(0,   rgb(ROSE_DK));
-    nkG.addColorStop(0.5, rgb(ROSE));
-    nkG.addColorStop(1,   rgb(ROSE_DK));
-    ctx.fillStyle = nkG;
+    // -- Glass neck --
+    const nkGlass = ctx.createLinearGradient(cx - nkw / 2, 0, cx + nkw / 2, 0);
+    nkGlass.addColorStop(0,   rgba([210, 180, 185], 0.42));
+    nkGlass.addColorStop(0.5, rgba([230, 210, 215], 0.14));
+    nkGlass.addColorStop(1,   rgba([210, 180, 185], 0.42));
+    ctx.fillStyle = nkGlass;
     rrect(cx - nkw / 2, nkTop, nkw, nkh, 4);
     ctx.fill();
-    // Neck highlight
-    ctx.fillStyle = rgba(WHITE, 0.22);
-    rrect(cx - nkw / 2 + 2, nkTop + 4, nkw * 0.28, nkh * 0.60, 2);
+    // Red liquid in neck
+    const nkLiqG = ctx.createLinearGradient(cx - nkw / 2 + 2, 0, cx + nkw / 2 - 2, 0);
+    nkLiqG.addColorStop(0,   rgba(RED_DK, 0.94));
+    nkLiqG.addColorStop(0.5, rgba(RED,    0.96));
+    nkLiqG.addColorStop(1,   rgba(RED_DK, 0.94));
+    ctx.fillStyle = nkLiqG;
+    rrect(cx - nkw / 2 + 2, nkTop + 2, nkw - 4, nkh - 4, 3);
     ctx.fill();
+    // Neck glass highlight
+    ctx.fillStyle = rgba(WHITE, 0.32);
+    rrect(cx - nkw / 2 + 2, nkTop + 4, nkw * 0.28, nkh * 0.56, 2);
+    ctx.fill();
+    // Neck glass outline
+    ctx.save();
+    ctx.strokeStyle = rgba(WHITE, 0.36);
+    ctx.lineWidth   = 1.2;
+    rrect(cx - nkw / 2, nkTop, nkw, nkh, 4);
+    ctx.stroke();
+    ctx.restore();
 
-    // Gold collar at neck top
-    const colH = Math.max(4, u * 0.09);
+    // Gold collar
     ctx.fillStyle = rgb(GOLD);
-    ctx.fillRect(cx - nkw / 2 - 2, nkTop - colH, nkw + 4, colH + 4);
+    ctx.fillRect(cx - nkw / 2 - 2, collarTopY, nkw + 4, colH + 4);
 
-    // -- Cap (lifts upward with capLift 0..1) --
+    // -- Cap (near-black, like real nail polish) --
+    const CAP    = [18, 12, 15];
+    const CAP_LT = [55, 42, 50];
     const capOffset = capLift * u * 1.05;
-    const capBot    = nkTop - colH - capOffset;
-    const capTop2   = capBot - ch;
+    const capBot    = collarTopY - capOffset;
+    const capTopY   = capBot - ch;
 
-    // Shadow under cap (deepens as cap opens)
-    if (capLift > 0.06) {
-      const ss = ctx.createRadialGradient(cx, nkTop + 5, 0, cx, nkTop + 5, cw * 0.85);
-      ss.addColorStop(0, rgba(PLUM, capLift * 0.25));
+    // Drop shadow under cap when lifted
+    if (capLift > 0.05) {
+      const ss = ctx.createRadialGradient(cx, collarTopY + 5, 0, cx, collarTopY + 5, cw * 0.88);
+      ss.addColorStop(0, rgba(PLUM, capLift * 0.32));
       ss.addColorStop(1, rgba(PLUM, 0));
       ctx.fillStyle = ss;
-      ctx.fillRect(cx - cw, nkTop, cw * 2, 12);
+      ctx.fillRect(cx - cw, collarTopY, cw * 2, 12);
     }
 
     const capG = ctx.createLinearGradient(cx - cw / 2, 0, cx + cw / 2, 0);
-    capG.addColorStop(0,    rgb(ROSE_DK));
-    capG.addColorStop(0.38, rgb(mix(ROSE, WHITE, 0.16)));
-    capG.addColorStop(1,    rgb(ROSE_DK));
+    capG.addColorStop(0,    rgba(CAP, 0.98));
+    capG.addColorStop(0.40, rgba(CAP_LT, 0.95));
+    capG.addColorStop(1,    rgba(CAP, 0.98));
     ctx.fillStyle = capG;
-    rrect(cx - cw / 2, capTop2, cw, ch, cw * 0.24);
+    rrect(cx - cw / 2, capTopY, cw, ch, cw * 0.24);
     ctx.fill();
     // Cap highlight
-    ctx.fillStyle = rgba(WHITE, 0.22);
-    rrect(cx - cw / 2 + 2, capTop2 + 4, cw * 0.26, ch * 0.50, 3);
+    ctx.fillStyle = rgba(WHITE, 0.16);
+    rrect(cx - cw / 2 + 2, capTopY + 4, cw * 0.26, ch * 0.48, 3);
     ctx.fill();
-    // Gold band at cap base
+    // Gold ring at cap base
     ctx.fillStyle = rgb(GOLD);
     ctx.fillRect(cx - cw / 2, capBot - Math.max(3, u * 0.07), cw, Math.max(3, u * 0.07));
 
-    // -- Brush applicator (emerges as cap rises) --
-    if (capLift > 0.16) {
-      const bAlpha  = Math.min(1, (capLift - 0.16) / 0.28);
+    // -- Brush handle (wire visible between cap bottom and collar) --
+    // Physically accurate: handle only appears in the gap as cap lifts off collar
+    const brushExposed = collarTopY - capBot;
+    if (brushExposed > 1) {
+      const bAlpha = Math.min(1, brushExposed / (u * 0.30));
       ctx.save();
       ctx.globalAlpha = bAlpha * 0.90;
-      const brushEnd = Math.min(capBot + u * 0.58, nkTop - 3);
-      // Wire handle
-      ctx.strokeStyle = rgba(ROSE_DK, 1);
-      ctx.lineWidth   = 1.8;
+      ctx.strokeStyle = rgba(RED_DK, 1);
+      ctx.lineWidth   = Math.max(1.5, u * 0.030);
       ctx.lineCap     = 'round';
       ctx.beginPath();
-      ctx.moveTo(cx, capBot);
-      ctx.lineTo(cx, brushEnd);
+      ctx.moveTo(cx, capBot + 1);
+      ctx.lineTo(cx, collarTopY - 1);
       ctx.stroke();
-      // Bristle head
-      const bw2 = u * 0.14;
-      const bh2 = u * 0.19;
-      ctx.fillStyle = rgba(ROSE, 1);
-      rrect(cx - bw2 / 2, brushEnd, bw2, bh2, bw2 * 0.35);
-      ctx.fill();
-      // Polish drop on bristle tip (appears when fully open)
-      if (capLift > 0.52) {
-        const dropA = Math.min(1, (capLift - 0.52) / 0.24);
-        ctx.globalAlpha = bAlpha * dropA * 0.82;
-        ctx.fillStyle   = rgba(ROSE_LT, 1);
-        ctx.beginPath();
-        ctx.arc(cx, brushEnd + bh2 + bw2 * 0.42, bw2 * 0.40, 0, Math.PI * 2);
-        ctx.fill();
-      }
       ctx.restore();
     }
   }
@@ -322,7 +342,6 @@
       const ph    = t * 2.6 + i * 0.92;
       const alpha = 0.10 + 0.08 * Math.sin(t * 1.4 + i * 0.7);
       const wLen  = cLen * (0.5 + 0.38 * (0.5 + 0.5 * Math.sin(t + i)));
-
       ctx.save();
       ctx.strokeStyle = rgba(WHITE, alpha);
       ctx.lineWidth   = 0.9 + fi * 0.7;
@@ -352,9 +371,8 @@
 
   // ── Hair dryer body ───────────────────────────────────────
   function drawDryer(g, fy, t) {
-    const { cx, cy, u, bw, bh, nr, nh, hw, hh, nozzleX } = g;
-    const fcy = cy + fy;
-
+    const { cx, cy, u, bw, bh, nh, hw, hh, nozzleX } = g;
+    const fcy    = cy + fy;
     const bLeft  = cx - bw / 2;
     const bRight = cx + bw / 2;
     const bTop   = fcy - bh / 2;
@@ -473,7 +491,7 @@
     const gn = geomNail();
     const fy = Math.sin(t * 0.82) * g.u * 0.055;
 
-    // Background gradient
+    // Background
     const bg = ctx.createLinearGradient(0, 0, W, H);
     bg.addColorStop(0,    rgb(PLUM));
     bg.addColorStop(0.48, rgb(PLUM_MD));
@@ -488,7 +506,7 @@
     ctx.fillStyle = amb;
     ctx.fillRect(0, 0, W, H);
 
-    // Hair strands (blown from nozzle)
+    // Hair strands
     for (const s of hairStrands) {
       s.prog += s.spd;
       if (s.prog >= 1) { Object.assign(s, spawnStrand(g, fy)); continue; }
@@ -508,15 +526,15 @@
       ctx.restore();
     }
 
-    // Air cone + wisps (behind dryer)
+    // Air cone (behind dryer)
     drawAir(g, fy, t);
 
     // -- Nail polish bottle --
     const capLift = (Math.sin(t * 0.88) * 0.5 + 0.5);
     drawNailPolish(gn, capLift);
 
-    // Nail sparkle particles (emit when cap is sufficiently open)
-    if (capLift > 0.50 && nailParts.length < 22 && Math.random() < 0.18) {
+    // Nail sparkles (emit when cap is open)
+    if (capLift > 0.52 && nailParts.length < 22 && Math.random() < 0.18) {
       nailParts.push(spawnNailPart(gn));
     }
     for (let i = nailParts.length - 1; i >= 0; i--) {
@@ -540,10 +558,10 @@
       ctx.restore();
     }
 
-    // Hair dryer body (drawn after nail bottle so it's on top on shared screen area)
+    // Hair dryer body
     drawDryer(g, fy, t);
 
-    // Air particles (in front of dryer body)
+    // Air particles
     for (const p of airParts) {
       p.age += 0.013;
       p.x   += p.vx;
@@ -554,7 +572,6 @@
       }
       const prog = p.age / p.life;
       const a    = Math.sin(prog * Math.PI) * 0.88;
-
       ctx.save();
       if (p.type === 'air') {
         const trail = Math.abs(p.vx) * 3.8;
