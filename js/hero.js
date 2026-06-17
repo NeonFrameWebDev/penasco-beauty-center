@@ -182,7 +182,7 @@
 
     // Ambient glow
     const amb = ctx.createRadialGradient(cx, bTop + bh * 0.38, 0, cx, bTop + bh * 0.38, bw * 3.4);
-    amb.addColorStop(0, rgba(RED, 0.45));
+    amb.addColorStop(0, rgba([155, 32, 48], 0.20));
     amb.addColorStop(1, rgba(RED, 0));
     ctx.fillStyle = amb;
     ctx.fillRect(cx - bw * 3.4, bTop - u, bw * 6.8, bh + u * 4);
