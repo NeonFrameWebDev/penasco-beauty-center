@@ -406,7 +406,7 @@ nav.site-nav.nav-scrolled {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(26, 11, 21, 0.55) 0%, rgba(26, 11, 21, 0.50) 24%, rgba(26, 11, 21, 0.22) 58%, transparent 100%);
+  background: linear-gradient(to right, rgba(26, 11, 21, 0.28) 0%, rgba(26, 11, 21, 0.42) 24%, rgba(26, 11, 21, 0.22) 58%, transparent 100%);
   z-index: 1;
   pointer-events: none;
 }
