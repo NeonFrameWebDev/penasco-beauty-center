@@ -406,7 +406,7 @@ nav.site-nav.nav-scrolled {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, rgba(26, 11, 21, 0.70) 0%, rgba(26, 11, 21, 0.28) 60%, transparent 100%);
+  background: linear-gradient(to right, rgba(26, 11, 21, 0.55) 0%, rgba(26, 11, 21, 0.50) 24%, rgba(26, 11, 21, 0.22) 58%, transparent 100%);
   z-index: 1;
   pointer-events: none;
 }
@@ -454,7 +454,10 @@ nav.site-nav.nav-scrolled {
 }
 
 @media (min-width: 1024px) {
-  .hero-content { max-width: 56%; }
+  .hero-content {
+    max-width: 74%;
+    padding-left: clamp(160px, 26vw, 400px);
+  }
 }
 
 /* ── Buttons ──────────────────────────────────────────────── */
