@@ -395,20 +395,19 @@ nav.site-nav.nav-scrolled {
   align-items: flex-end;
 }
 
-.hero-bg {
+.hero-canvas {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #1A0B15 0%, #5C2040 55%, #9B4060 100%);
+  width: 100%;
+  height: 100%;
   z-index: 0;
 }
 
-.hero-glow {
+.hero-overlay {
   position: absolute;
-  width: 55%;
-  height: 75%;
-  right: -5%;
-  top: 12%;
-  background: radial-gradient(ellipse at center, rgba(200, 110, 140, 0.28) 0%, transparent 70%);
+  inset: 0;
+  background: linear-gradient(to right, rgba(26, 11, 21, 0.70) 0%, rgba(26, 11, 21, 0.28) 60%, transparent 100%);
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -454,33 +453,7 @@ nav.site-nav.nav-scrolled {
   flex-wrap: wrap;
 }
 
-/* Hero photo slot -- desktop right column */
-.hero-photo-slot {
-  display: none;
-  position: absolute;
-  z-index: 2;
-  right: var(--edge);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 340px;
-  height: 420px;
-}
-
-.hero-ph {
-  height: 100%;
-  border-color: rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.06);
-}
-
-.hero-ph .ph-label,
-.hero-ph .ph-icon {
-  opacity: 0.4;
-  color: #fff;
-  stroke: #fff;
-}
-
 @media (min-width: 1024px) {
-  .hero-photo-slot { display: block; }
   .hero-content { max-width: 56%; }
 }
 
