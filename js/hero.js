@@ -41,8 +41,8 @@
   function geom() {
     const mobile = W < 700;
     const u  = clamp(Math.min(W, H) * 0.155, 38, 118);
-    const cx = mobile ? W * 0.62 : W * 0.74;
-    const cy = mobile ? H * 0.40 : H * 0.44;
+    const cx = mobile ? W * 0.62 : W * 0.86;
+    const cy = mobile ? H * 0.26 : H * 0.44;
     const bw = u * 2.1;    // barrel width
     const bh = u * 0.70;   // barrel height
     const nr = u * 0.72;   // nozzle reach (extends left from barrel left)
