@@ -61,7 +61,7 @@
     const mobile = W < 700;
     const u   = clamp(Math.min(W, H) * 0.092, 20, 68);
     const cx  = mobile ? W * 0.16 : W * 0.10;
-    const cy  = mobile ? H * 0.30 : H * 0.50;
+    const cy  = mobile ? H * 0.36 : H * 0.57;
     const bw  = u * 1.08;
     const bh  = u * 2.45;
     const nkw = u * 0.48;
