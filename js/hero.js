@@ -25,9 +25,9 @@
   const WHITE   = [255, 248, 244];
   const BLUSH   = [238, 180, 196];
   // Nail polish bottle
-  const RED     = [210,  22,  22];
-  const RED_LT  = [238,  78,  68];
-  const RED_DK  = [138,   8,   8];
+  const RED     = [232,  38,  38];
+  const RED_LT  = [252, 105,  92];
+  const RED_DK  = [165,  14,  14];
 
   // ── State ─────────────────────────────────────────────────
   let W = 0, H = 0, DPR = 1;
@@ -182,7 +182,7 @@
 
     // Ambient glow
     const amb = ctx.createRadialGradient(cx, bTop + bh * 0.38, 0, cx, bTop + bh * 0.38, bw * 3.4);
-    amb.addColorStop(0, rgba(RED, 0.28));
+    amb.addColorStop(0, rgba(RED, 0.45));
     amb.addColorStop(1, rgba(RED, 0));
     ctx.fillStyle = amb;
     ctx.fillRect(cx - bw * 3.4, bTop - u, bw * 6.8, bh + u * 4);
@@ -190,9 +190,9 @@
     // -- Glass bottle body --
     // Subtle glass tint (walls look like crystal)
     const glassG = ctx.createLinearGradient(cx - bw / 2, 0, cx + bw / 2, 0);
-    glassG.addColorStop(0,    rgba([210, 180, 185], 0.38));
-    glassG.addColorStop(0.45, rgba([230, 205, 210], 0.12));
-    glassG.addColorStop(1,    rgba([210, 180, 185], 0.38));
+    glassG.addColorStop(0,    rgba([220, 190, 195], 0.20));
+    glassG.addColorStop(0.45, rgba([235, 215, 218], 0.06));
+    glassG.addColorStop(1,    rgba([220, 190, 195], 0.20));
     ctx.fillStyle = glassG;
     rrect(cx - bw / 2, bTop, bw, bh, bw * 0.26);
     ctx.fill();
@@ -235,9 +235,9 @@
 
     // -- Glass neck --
     const nkGlass = ctx.createLinearGradient(cx - nkw / 2, 0, cx + nkw / 2, 0);
-    nkGlass.addColorStop(0,   rgba([210, 180, 185], 0.42));
-    nkGlass.addColorStop(0.5, rgba([230, 210, 215], 0.14));
-    nkGlass.addColorStop(1,   rgba([210, 180, 185], 0.42));
+    nkGlass.addColorStop(0,   rgba([220, 190, 195], 0.22));
+    nkGlass.addColorStop(0.5, rgba([235, 215, 218], 0.07));
+    nkGlass.addColorStop(1,   rgba([220, 190, 195], 0.22));
     ctx.fillStyle = nkGlass;
     rrect(cx - nkw / 2, nkTop, nkw, nkh, 4);
     ctx.fill();
