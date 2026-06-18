@@ -264,16 +264,47 @@
           </div>
         </div>
 
-        <!-- Right: photo placeholder -->
+        <!-- Right: slideshow -->
         <div class="nosotros-photo-wrap reveal">
-          <div class="photo-placeholder nosotros-ph">
-            <svg class="ph-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-              <circle cx="12" cy="13" r="4"/>
-            </svg>
-            <p class="ph-label"
-               data-es="Foto del sal&oacute;n / equipo"
-               data-en="Salon / team photo">Foto del sal&oacute;n / equipo</p>
+          <div class="salon-slideshow" role="region" aria-label="Fotos del salón">
+
+            <div class="ss-slides">
+              <figure class="ss-slide active">
+                <img src="images/salon-chairs.jpg"   alt="Sillas de pedicura en Peñasco Beauty Center" loading="lazy">
+              </figure>
+              <figure class="ss-slide">
+                <img src="images/salon-facial.jpg"   alt="Tratamiento facial en Peñasco Beauty Center" loading="lazy">
+              </figure>
+              <figure class="ss-slide">
+                <img src="images/salon-interior.jpg" alt="Interior de Peñasco Beauty Center" loading="lazy">
+              </figure>
+              <figure class="ss-slide">
+                <img src="images/salon-nails.jpg"    alt="Esmaltes de uñas en Peñasco Beauty Center" loading="lazy">
+              </figure>
+              <figure class="ss-slide">
+                <img src="images/salon-exterior.jpg" alt="Fachada de Peñasco Beauty Center" loading="lazy">
+              </figure>
+            </div>
+
+            <button class="ss-btn ss-prev" aria-label="Foto anterior">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="ss-btn ss-next" aria-label="Siguiente foto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+
+            <div class="ss-footer">
+              <div class="ss-bar"><div class="ss-bar-fill"></div></div>
+              <div class="ss-dots" role="list">
+                <button class="ss-dot active" aria-label="Foto 1"></button>
+                <button class="ss-dot" aria-label="Foto 2"></button>
+                <button class="ss-dot" aria-label="Foto 3"></button>
+                <button class="ss-dot" aria-label="Foto 4"></button>
+                <button class="ss-dot" aria-label="Foto 5"></button>
+              </div>
+              <span class="ss-count"><span class="ss-cur">1</span><span class="ss-sep">/</span>5</span>
+            </div>
+
           </div>
         </div>
 
