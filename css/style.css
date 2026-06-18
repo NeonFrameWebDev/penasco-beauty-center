@@ -684,17 +684,152 @@ nav.site-nav.nav-scrolled .nav-hamburger span { background: var(--text); }
   flex-direction: column;
 }
 
-.nosotros-ph {
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius);
-}
-
 @media (min-width: 769px) {
   .nosotros-grid {
     grid-template-columns: 1fr 380px;
     gap: 4rem;
   }
 }
+
+/* ── Salon slideshow ───────────────────────────────────────── */
+.salon-slideshow {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--surface);
+  box-shadow: 0 12px 48px rgba(31, 15, 26, 0.22);
+  user-select: none;
+}
+
+.ss-slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ss-slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 0.75s ease;
+}
+
+.ss-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.ss-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform-origin: center center;
+}
+
+@keyframes ss-kenburns {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1.00); }
+}
+
+.ss-slide.active img {
+  animation: ss-kenburns 6s ease forwards;
+}
+
+/* Prev / Next buttons */
+.ss-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(26, 11, 21, 0.52);
+  border: 1.5px solid rgba(201, 169, 110, 0.45);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  backdrop-filter: blur(6px);
+}
+
+.ss-btn svg { width: 18px; height: 18px; }
+.ss-prev { left: 12px; }
+.ss-next { right: 12px; }
+
+.ss-btn:hover {
+  background: rgba(184, 92, 114, 0.72);
+  border-color: var(--rose);
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* Footer bar */
+.ss-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px 12px;
+  background: linear-gradient(to top, rgba(26, 11, 21, 0.70) 0%, transparent 100%);
+}
+
+.ss-bar {
+  flex: 1;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.20);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ss-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--gold);
+  border-radius: 2px;
+}
+
+.ss-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.ss-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.ss-dot.active {
+  background: var(--gold);
+  transform: scale(1.35);
+}
+
+.ss-count {
+  font-family: var(--font-body);
+  font-size: 0.70rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.70);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.ss-sep { margin: 0 2px; }
 
 /* ── Services ─────────────────────────────────────────────── */
 #servicios {
