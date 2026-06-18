@@ -476,10 +476,10 @@ nav.site-nav.nav-scrolled .nav-hamburger span { background: var(--text); }
 
 @media (min-width: 1024px) {
   .hero-content {
-    max-width: 58%;
+    max-width: 68%;
     margin-left: 0;
-    padding-left: clamp(3rem, 8vw, 7rem);
-    padding-bottom: clamp(8rem, 22vh, 14rem);
+    padding-left: clamp(140px, 22vw, 320px);
+    padding-bottom: clamp(6rem, 18vh, 12rem);
   }
 }
 
