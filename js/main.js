@@ -162,47 +162,57 @@
       }
 
       function drawComb(x, t) {
-        const sw = Math.max(5, CW * 0.018);
-        const th = Math.max(3, CW * 0.011);
-        const n  = 13;
+        const sw  = Math.max(4, CW * 0.013);   // spine width
+        const th  = Math.max(2, CH * 0.009);   // tooth height
+        const tl  = Math.max(18, CW * 0.060);  // tooth length each side
+        const n   = 30;
         const gap = CH / (n + 1);
 
-        // Soft glow behind spine
-        const glow = ctx.createRadialGradient(x, CH / 2, 0, x, CH / 2, sw * 11);
-        glow.addColorStop(0, rgba(ROSE, 0.30));
+        // Tight glow behind spine only
+        const glow = ctx.createRadialGradient(x, CH / 2, 0, x, CH / 2, sw * 5);
+        glow.addColorStop(0, rgba(ROSE, 0.28));
         glow.addColorStop(1, rgba(ROSE, 0));
         ctx.fillStyle = glow;
-        ctx.fillRect(x - sw * 11, 0, sw * 22, CH);
+        ctx.fillRect(x - sw * 5, 0, sw * 10, CH);
 
         // Spine
         const sg = ctx.createLinearGradient(x - sw / 2, 0, x + sw / 2, 0);
-        sg.addColorStop(0,    rgba(ROSE,    0.90));
-        sg.addColorStop(0.45, rgba([250, 210, 225], 0.98));
-        sg.addColorStop(1,    rgba(ROSE_LT, 0.90));
+        sg.addColorStop(0,    rgba(ROSE,    0.92));
+        sg.addColorStop(0.45, rgba([252, 215, 228], 1.00));
+        sg.addColorStop(1,    rgba(ROSE_LT, 0.92));
         ctx.fillStyle = sg;
         rrect(ctx, x - sw / 2, 0, sw, CH, sw / 2);
         ctx.fill();
 
-        // Teeth (extending right from spine)
+        // Teeth — symmetric, both sides
+        const rate = dragging ? 0.18 : 0.022;
         for (let i = 0; i < n; i++) {
-          const ty   = gap * (i + 1);
-          const long = i % 2 === 0;
-          const tl   = long ? CW * 0.14 : CW * 0.08;
+          const ty = gap * (i + 1);
 
-          const tg = ctx.createLinearGradient(x + sw / 2, 0, x + sw / 2 + tl, 0);
-          tg.addColorStop(0,    rgba(GOLD,    0.95));
-          tg.addColorStop(0.55, rgba(GOLD_LT, 0.72));
-          tg.addColorStop(1,    rgba(GOLD_LT, 0));
-          ctx.fillStyle = tg;
+          // Left tooth
+          const lg = ctx.createLinearGradient(x - sw / 2, 0, x - sw / 2 - tl, 0);
+          lg.addColorStop(0,    rgba(GOLD,    0.92));
+          lg.addColorStop(0.55, rgba(GOLD_LT, 0.65));
+          lg.addColorStop(1,    rgba(GOLD_LT, 0));
+          ctx.fillStyle = lg;
+          rrect(ctx, x - sw / 2 - tl, ty - th / 2, tl, th, th / 2);
+          ctx.fill();
+
+          // Right tooth
+          const rg = ctx.createLinearGradient(x + sw / 2, 0, x + sw / 2 + tl, 0);
+          rg.addColorStop(0,    rgba(GOLD,    0.92));
+          rg.addColorStop(0.55, rgba(GOLD_LT, 0.65));
+          rg.addColorStop(1,    rgba(GOLD_LT, 0));
+          ctx.fillStyle = rg;
           rrect(ctx, x + sw / 2, ty - th / 2, tl, th, th / 2);
           ctx.fill();
 
-          // Sparkles from tooth tips
-          const rate = dragging ? 0.20 : 0.028;
+          // Sparkles from both tooth tips
           if (Math.random() < rate && sparkles.length < 72) {
+            const side = Math.random() < 0.5 ? -1 : 1;
             spawnSparkle(
-              x + sw / 2 + tl * rand(0.60, 1.02),
-              ty + rand(-th * 1.5, th * 1.5)
+              x + side * (sw / 2 + tl * rand(0.55, 1.05)),
+              ty + rand(-th * 2, th * 2)
             );
           }
         }
