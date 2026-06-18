@@ -458,6 +458,7 @@ nav.site-nav.nav-scrolled {
     max-width: 68%;
     margin-left: 0;
     padding-left: clamp(140px, 22vw, 320px);
+    padding-bottom: clamp(6rem, 18vh, 12rem);
   }
 }
 
