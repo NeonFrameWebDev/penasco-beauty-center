@@ -82,16 +82,18 @@
 
   function getBottleRow() {
     const mobile = W < 700;
-    const count  = mobile ? 5 : 6;
-    const u      = mobile
-      ? clamp(Math.min(W, H) * 0.052, 12, 32)
-      : clamp(Math.min(W, H) * 0.060, 18, 46);
-    const cy     = mobile ? H * 0.93 : H * 0.91;
-    const padL   = mobile ? W * 0.08 : W * 0.06;
-    const padR   = mobile ? W * 0.08 : W * 0.06;
+    if (!mobile) {
+      const u = clamp(Math.min(W, H) * 0.092, 20, 68);
+      return [{ cx: W * 0.10, cy: H * 0.57, u }];
+    }
+    const count  = 5;
+    const u      = clamp(Math.min(W, H) * 0.052, 12, 32);
+    const cy     = H * 0.97;
+    const padL   = W * 0.08;
+    const padR   = W * 0.08;
     const usable = W - padL - padR;
     return Array.from({ length: count }, (_, i) => ({
-      cx: padL + usable * (count === 1 ? 0.5 : i / (count - 1)),
+      cx: padL + usable * (i / (count - 1)),
       cy,
       u,
     }));
