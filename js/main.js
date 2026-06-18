@@ -93,11 +93,75 @@
     });
   }
 
+  /* ── Salon slideshow ─────────────────────────────────────── */
+  function initSlideshow() {
+    const ss = document.querySelector(".salon-slideshow");
+    if (!ss) return;
+
+    const slides   = ss.querySelectorAll(".ss-slide");
+    const dots     = ss.querySelectorAll(".ss-dot");
+    const fill     = ss.querySelector(".ss-bar-fill");
+    const curEl    = ss.querySelector(".ss-cur");
+    const n        = slides.length;
+    let cur        = 0;
+    let autoTimer  = null;
+    const INTERVAL = 4500;
+
+    function go(idx) {
+      slides[cur].classList.remove("active");
+      dots[cur].classList.remove("active");
+      cur = ((idx % n) + n) % n;
+      slides[cur].classList.add("active");
+      dots[cur].classList.add("active");
+      if (curEl) curEl.textContent = cur + 1;
+      resetBar();
+    }
+
+    function resetBar() {
+      if (!fill) return;
+      fill.style.transition = "none";
+      fill.style.width = "0%";
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        fill.style.transition = `width ${INTERVAL}ms linear`;
+        fill.style.width = "100%";
+      }));
+    }
+
+    function startAuto() {
+      stopAuto();
+      autoTimer = setInterval(() => go(cur + 1), INTERVAL);
+      resetBar();
+    }
+
+    function stopAuto() {
+      clearInterval(autoTimer);
+      autoTimer = null;
+      if (fill) { fill.style.transition = "none"; }
+    }
+
+    ss.querySelector(".ss-prev").addEventListener("click", () => { go(cur - 1); startAuto(); });
+    ss.querySelector(".ss-next").addEventListener("click", () => { go(cur + 1); startAuto(); });
+    dots.forEach((d, i) => d.addEventListener("click", () => { go(i); startAuto(); }));
+
+    ss.addEventListener("mouseenter", stopAuto);
+    ss.addEventListener("mouseleave", startAuto);
+
+    let touchX = 0;
+    ss.addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
+    ss.addEventListener("touchend", e => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 40) { go(dx < 0 ? cur + 1 : cur - 1); startAuto(); }
+    }, { passive: true });
+
+    startAuto();
+  }
+
   /* ── Init ────────────────────────────────────────────────── */
   document.addEventListener("DOMContentLoaded", () => {
     initLoader();
     initNav();
     initReveal();
     initHamburger();
+    initSlideshow();
   });
 })();
