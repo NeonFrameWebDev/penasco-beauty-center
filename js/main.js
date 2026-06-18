@@ -93,6 +93,52 @@
     });
   }
 
+  /* ── Before & After sliders ──────────────────────────────── */
+  function initBeforeAfter() {
+    document.querySelectorAll(".ba-card").forEach(card => {
+      const after  = card.querySelector(".ba-after");
+      const handle = card.querySelector(".ba-handle");
+      let active   = false;
+
+      function set(pct) {
+        pct = Math.min(95, Math.max(5, pct));
+        after.style.clipPath  = `inset(0 ${100 - pct}% 0 0)`;
+        handle.style.left     = pct + "%";
+        handle.style.transform = "translateX(-50%)";
+      }
+
+      function pctFromX(clientX) {
+        const r = card.getBoundingClientRect();
+        return ((clientX - r.left) / r.width) * 100;
+      }
+
+      card.addEventListener("mousedown",  e => { active = true; set(pctFromX(e.clientX)); });
+      window.addEventListener("mouseup",  () => { active = false; });
+      window.addEventListener("mousemove", e => { if (active) set(pctFromX(e.clientX)); });
+
+      card.addEventListener("touchstart", e => { active = true; set(pctFromX(e.touches[0].clientX)); }, { passive: true });
+      window.addEventListener("touchend",  () => { active = false; });
+      window.addEventListener("touchmove", e => {
+        if (active) { e.preventDefault(); set(pctFromX(e.touches[0].clientX)); }
+      }, { passive: false });
+
+      // Animate in to 50% on first intersection
+      const io = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          io.disconnect();
+          let p = 20, dir = 1;
+          const sweep = setInterval(() => {
+            p += dir * 1.8;
+            if (p >= 80) dir = -1;
+            if (p <= 50) { clearInterval(sweep); set(50); return; }
+            set(p);
+          }, 16);
+        }
+      }, { threshold: 0.4 });
+      io.observe(card);
+    });
+  }
+
   /* ── Salon slideshow ─────────────────────────────────────── */
   function initSlideshow() {
     const ss = document.querySelector(".salon-slideshow");
@@ -162,6 +208,7 @@
     initNav();
     initReveal();
     initHamburger();
+    initBeforeAfter();
     initSlideshow();
   });
 })();
