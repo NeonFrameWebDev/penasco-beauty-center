@@ -86,7 +86,7 @@
     const u      = mobile
       ? clamp(Math.min(W, H) * 0.052, 12, 32)
       : clamp(Math.min(W, H) * 0.060, 18, 46);
-    const cy     = mobile ? H * 0.86 : H * 0.84;
+    const cy     = mobile ? H * 0.93 : H * 0.91;
     const padL   = mobile ? W * 0.08 : W * 0.06;
     const padR   = mobile ? W * 0.08 : W * 0.06;
     const usable = W - padL - padR;
