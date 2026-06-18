@@ -162,57 +162,63 @@
       }
 
       function drawComb(x, t) {
-        const sw  = Math.max(4, CW * 0.013);   // spine width
-        const th  = Math.max(2, CH * 0.009);   // tooth height
-        const tl  = Math.max(18, CW * 0.060);  // tooth length each side
-        const n   = 30;
-        const gap = CH / (n + 1);
+        // Portrait comb: handle at bottom, teeth going up
+        const toothCount = 18;
+        const tw   = Math.max(2, CW * 0.005);
+        const tgap = Math.max(2.5, CW * 0.0075);
+        const combW = toothCount * tw + (toothCount - 1) * tgap;
+        const halfW = combW / 2;
 
-        // Tight glow behind spine only
-        const glow = ctx.createRadialGradient(x, CH / 2, 0, x, CH / 2, sw * 5);
-        glow.addColorStop(0, rgba(ROSE, 0.28));
+        const backY  = CH * 0.42;                       // where back bar sits
+        const backH  = Math.max(5, CH * 0.018);         // back bar thickness
+        const toothH = backY - Math.max(4, CH * 0.01);  // tooth length
+        const hW     = Math.max(8, combW * 0.40);       // handle width (narrower)
+        const hH     = CH - backY - backH;              // handle height
+
+        // Glow over tooth area
+        const glow = ctx.createRadialGradient(x, backY * 0.45, 0, x, backY * 0.45, halfW * 2.2);
+        glow.addColorStop(0, rgba(ROSE, 0.16));
         glow.addColorStop(1, rgba(ROSE, 0));
         ctx.fillStyle = glow;
-        ctx.fillRect(x - sw * 5, 0, sw * 10, CH);
+        ctx.fillRect(x - halfW * 2.2, 0, halfW * 4.4, backY);
 
-        // Spine
-        const sg = ctx.createLinearGradient(x - sw / 2, 0, x + sw / 2, 0);
-        sg.addColorStop(0,    rgba(ROSE,    0.92));
-        sg.addColorStop(0.45, rgba([252, 215, 228], 1.00));
-        sg.addColorStop(1,    rgba(ROSE_LT, 0.92));
-        ctx.fillStyle = sg;
-        rrect(ctx, x - sw / 2, 0, sw, CH, sw / 2);
+        // Handle
+        const hGrad = ctx.createLinearGradient(x - hW / 2, 0, x + hW / 2, 0);
+        hGrad.addColorStop(0,    rgba([148, 52, 78],  0.96));
+        hGrad.addColorStop(0.45, rgba(ROSE,           1.00));
+        hGrad.addColorStop(1,    rgba(ROSE_LT,        0.88));
+        ctx.fillStyle = hGrad;
+        rrect(ctx, x - hW / 2, backY + backH, hW, hH, Math.min(hW / 2, 14));
         ctx.fill();
 
-        // Teeth — symmetric, both sides
-        const rate = dragging ? 0.18 : 0.022;
-        for (let i = 0; i < n; i++) {
-          const ty = gap * (i + 1);
+        // Back bar (connects handle to teeth)
+        const bGrad = ctx.createLinearGradient(x - halfW, 0, x + halfW, 0);
+        bGrad.addColorStop(0,   rgba(ROSE,             0.92));
+        bGrad.addColorStop(0.5, rgba([253, 218, 230],  1.00));
+        bGrad.addColorStop(1,   rgba(ROSE_LT,          0.92));
+        ctx.fillStyle = bGrad;
+        rrect(ctx, x - halfW, backY, combW, backH, backH / 2);
+        ctx.fill();
 
-          // Left tooth
-          const lg = ctx.createLinearGradient(x - sw / 2, 0, x - sw / 2 - tl, 0);
-          lg.addColorStop(0,    rgba(GOLD,    0.92));
-          lg.addColorStop(0.55, rgba(GOLD_LT, 0.65));
-          lg.addColorStop(1,    rgba(GOLD_LT, 0));
-          ctx.fillStyle = lg;
-          rrect(ctx, x - sw / 2 - tl, ty - th / 2, tl, th, th / 2);
+        // Teeth — vertical, going up from back bar
+        const rate = dragging ? 0.14 : 0.016;
+        for (let i = 0; i < toothCount; i++) {
+          const tx = x - halfW + i * (tw + tgap);
+          const ty = backY - toothH;
+
+          const tGrad = ctx.createLinearGradient(0, ty, 0, backY);
+          tGrad.addColorStop(0,    rgba(GOLD_LT, 0));
+          tGrad.addColorStop(0.22, rgba(GOLD_LT, 0.72));
+          tGrad.addColorStop(1,    rgba(GOLD,    0.96));
+          ctx.fillStyle = tGrad;
+          rrect(ctx, tx, ty, tw, toothH, tw / 2);
           ctx.fill();
 
-          // Right tooth
-          const rg = ctx.createLinearGradient(x + sw / 2, 0, x + sw / 2 + tl, 0);
-          rg.addColorStop(0,    rgba(GOLD,    0.92));
-          rg.addColorStop(0.55, rgba(GOLD_LT, 0.65));
-          rg.addColorStop(1,    rgba(GOLD_LT, 0));
-          ctx.fillStyle = rg;
-          rrect(ctx, x + sw / 2, ty - th / 2, tl, th, th / 2);
-          ctx.fill();
-
-          // Sparkles from both tooth tips
-          if (Math.random() < rate && sparkles.length < 72) {
-            const side = Math.random() < 0.5 ? -1 : 1;
+          // Sparkles from tooth tips
+          if (Math.random() < rate && sparkles.length < 60) {
             spawnSparkle(
-              x + side * (sw / 2 + tl * rand(0.55, 1.05)),
-              ty + rand(-th * 2, th * 2)
+              tx + tw / 2 + rand(-tw, tw),
+              ty + rand(0, 6)
             );
           }
         }
