@@ -209,6 +209,13 @@ nav.site-nav.nav-scrolled {
   box-shadow: 0 1px 12px rgba(31, 15, 26, 0.08);
 }
 
+nav.site-nav.nav-scrolled .nav-logo-name { color: var(--rose); }
+nav.site-nav.nav-scrolled .nav-logo-sub  { color: var(--text-muted); }
+nav.site-nav.nav-scrolled .nav-links a   { color: var(--text); }
+nav.site-nav.nav-scrolled .lang-toggle   { color: var(--text); border-color: var(--rose); }
+nav.site-nav.nav-scrolled .lang-toggle:hover { background: rgba(184, 92, 114, 0.08); }
+nav.site-nav.nav-scrolled .nav-hamburger span { background: var(--text); }
+
 .nav-logo {
   display: flex;
   flex-direction: column;
@@ -220,19 +227,19 @@ nav.site-nav.nav-scrolled {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-  letter-spacing: 0.06em;
-  color: var(--rose);
+  letter-spacing: 0.04em;
+  color: #fff;
   text-transform: none;
-  font-style: italic;
+  font-style: normal;
 }
 
 .nav-logo-sub {
-  font-family: var(--font-body);
+  font-family: var(--font-display);
   font-weight: 400;
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: clamp(0.62rem, 1.2vw, 0.75rem);
+  color: rgba(255, 255, 255, 0.80);
+  letter-spacing: 0.12em;
+  text-transform: none;
 }
 
 .nav-right {
@@ -252,7 +259,7 @@ nav.site-nav.nav-scrolled {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--text);
+  color: #fff;
   position: relative;
   padding-bottom: 2px;
 }
@@ -291,20 +298,20 @@ nav.site-nav.nav-scrolled {
   align-items: center;
   gap: 0.35rem;
   padding: 0.35rem 0.65rem;
-  border: 1px solid var(--rose);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 20px;
   background: transparent;
   cursor: pointer;
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--text);
+  color: #fff;
   letter-spacing: 0.05em;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .lang-toggle:hover {
-  background: rgba(184, 92, 114, 0.08);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .lt-flag { font-size: 1rem; line-height: 1; }
@@ -325,9 +332,9 @@ nav.site-nav.nav-scrolled {
   display: block;
   width: 22px;
   height: 2px;
-  background: var(--text);
+  background: #fff;
   border-radius: 2px;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease, background 0.2s ease;
 }
 
 .nav-hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
