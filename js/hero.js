@@ -29,6 +29,14 @@
   const RED_LT  = [252, 105,  92];
   const RED_DK  = [165,  14,  14];
 
+  const PALETTES = [
+    { liq: [232,  38,  38],  liqLt: [252, 105,  92],  liqDk: [165,  14,  14],  glow: [155,  32,  48]  },
+    { liq: [220,  48, 148],  liqLt: [245, 115, 185],  liqDk: [155,  18,  98],  glow: [165,  35, 115]  },
+    { liq: [105,  30,  90],  liqLt: [165,  75, 148],  liqDk: [ 60,  12,  50],  glow: [ 85,  25,  72]  },
+    { liq: [215, 145, 110],  liqLt: [238, 195, 165],  liqDk: [160,  95,  60],  glow: [170, 115,  82]  },
+    { liq: [148,  20,  45],  liqLt: [200,  65,  90],  liqDk: [ 90,  10,  25],  glow: [120,  18,  38]  },
+  ];
+
   // ── State ─────────────────────────────────────────────────
   let W = 0, H = 0, DPR = 1;
   let airParts = [], stars = [], hairStrands = [], nailParts = [];
@@ -59,13 +67,7 @@
   }
 
   // ── Nail polish bottle geometry ───────────────────────────
-  function geomNail() {
-    const mobile = W < 700;
-    const u   = mobile
-      ? clamp(Math.min(W, H) * 0.042, 10, 28)
-      : clamp(Math.min(W, H) * 0.092, 20, 68);
-    const cx  = mobile ? W * 0.14 : W * 0.10;
-    const cy  = mobile ? H * 0.88 : H * 0.57;
+  function makeGeom(cx, cy, u) {
     const bw  = u * 1.08;
     const bh  = u * 2.45;
     const nkw = u * 0.48;
@@ -76,6 +78,23 @@
     const bBot  = cy + bh / 2;
     const nkTop = bTop - nkh;
     return { u, cx, cy, bw, bh, nkw, nkh, cw, ch, bTop, bBot, nkTop };
+  }
+
+  function getBottleRow() {
+    const mobile = W < 700;
+    const count  = mobile ? 5 : 6;
+    const u      = mobile
+      ? clamp(Math.min(W, H) * 0.052, 12, 32)
+      : clamp(Math.min(W, H) * 0.060, 18, 46);
+    const cy     = mobile ? H * 0.86 : H * 0.84;
+    const padL   = mobile ? W * 0.08 : W * 0.06;
+    const padR   = mobile ? W * 0.08 : W * 0.06;
+    const usable = W - padL - padR;
+    return Array.from({ length: count }, (_, i) => ({
+      cx: padL + usable * (count === 1 ? 0.5 : i / (count - 1)),
+      cy,
+      u,
+    }));
   }
 
   // ── Spawners ──────────────────────────────────────────────
@@ -123,8 +142,8 @@
     };
   }
 
-  function spawnNailPart(gn) {
-    const cols = [RED_LT, GOLD_LT, WHITE];
+  function spawnNailPart(gn, pal) {
+    const cols = [pal.liqLt, GOLD_LT, WHITE];
     return {
       x:    gn.cx + rand(-gn.nkw * 0.35, gn.nkw * 0.35),
       y:    gn.nkTop,
@@ -179,15 +198,15 @@
   }
 
   // ── Nail polish bottle ────────────────────────────────────
-  function drawNailPolish(gn, capLift) {
+  function drawNailPolish(gn, capLift, pal) {
     const { cx, u, bw, bh, nkw, nkh, cw, ch, bTop, bBot, nkTop } = gn;
     const colH       = Math.max(4, u * 0.09);
     const collarTopY = nkTop - colH;
 
     // Ambient glow
     const amb = ctx.createRadialGradient(cx, bTop + bh * 0.38, 0, cx, bTop + bh * 0.38, bw * 3.4);
-    amb.addColorStop(0, rgba([155, 32, 48], 0.20));
-    amb.addColorStop(1, rgba(RED, 0));
+    amb.addColorStop(0, rgba(pal.glow, 0.20));
+    amb.addColorStop(1, rgba(pal.liq, 0));
     ctx.fillStyle = amb;
     ctx.fillRect(cx - bw * 3.4, bTop - u, bw * 6.8, bh + u * 4);
 
@@ -204,10 +223,10 @@
     // Red liquid inside (inset from glass walls, air gap at top)
     const liqTop = bTop + bh * 0.11;
     const liqG   = ctx.createLinearGradient(cx - bw / 2 + 3, 0, cx + bw / 2 - 3, 0);
-    liqG.addColorStop(0,    rgba(RED_DK, 0.97));
-    liqG.addColorStop(0.30, rgba(RED,    0.98));
-    liqG.addColorStop(0.68, rgba(RED_LT, 0.92));
-    liqG.addColorStop(1,    rgba(RED_DK, 0.97));
+    liqG.addColorStop(0,    rgba(pal.liqDk, 0.97));
+    liqG.addColorStop(0.30, rgba(pal.liq,   0.98));
+    liqG.addColorStop(0.68, rgba(pal.liqLt, 0.92));
+    liqG.addColorStop(1,    rgba(pal.liqDk, 0.97));
     ctx.fillStyle = liqG;
     rrect(cx - bw / 2 + 3, liqTop, bw - 6, bBot - liqTop - 6, bw * 0.20);
     ctx.fill();
@@ -247,9 +266,9 @@
     ctx.fill();
     // Red liquid in neck
     const nkLiqG = ctx.createLinearGradient(cx - nkw / 2 + 2, 0, cx + nkw / 2 - 2, 0);
-    nkLiqG.addColorStop(0,   rgba(RED_DK, 0.94));
-    nkLiqG.addColorStop(0.5, rgba(RED,    0.96));
-    nkLiqG.addColorStop(1,   rgba(RED_DK, 0.94));
+    nkLiqG.addColorStop(0,   rgba(pal.liqDk, 0.94));
+    nkLiqG.addColorStop(0.5, rgba(pal.liq,   0.96));
+    nkLiqG.addColorStop(1,   rgba(pal.liqDk, 0.94));
     ctx.fillStyle = nkLiqG;
     rrect(cx - nkw / 2 + 2, nkTop + 2, nkw - 4, nkh - 4, 3);
     ctx.fill();
@@ -307,7 +326,7 @@
       const bAlpha = Math.min(1, brushExposed / (u * 0.30));
       ctx.save();
       ctx.globalAlpha = bAlpha * 0.90;
-      ctx.strokeStyle = rgba(RED_DK, 1);
+      ctx.strokeStyle = rgba(pal.liqDk, 1);
       ctx.lineWidth   = Math.max(1.5, u * 0.030);
       ctx.lineCap     = 'round';
       ctx.beginPath();
@@ -491,9 +510,9 @@
   function frame(t) {
     ctx.clearRect(0, 0, W, H);
 
-    const g  = geom();
-    const gn = geomNail();
-    const fy = Math.sin(t * 0.82) * g.u * 0.055;
+    const g   = geom();
+    const row = getBottleRow();
+    const fy  = Math.sin(t * 0.82) * g.u * 0.055;
 
     // Background
     const bg = ctx.createLinearGradient(0, 0, W, H);
@@ -533,14 +552,19 @@
     // Air cone (behind dryer)
     drawAir(g, fy, t);
 
-    // -- Nail polish bottle --
-    const capLift = (Math.sin(t * 0.88) * 0.5 + 0.5);
-    drawNailPolish(gn, capLift);
+    // -- Nail polish bottle row --
+    row.forEach((pos, bi) => {
+      const gn      = makeGeom(pos.cx, pos.cy, pos.u);
+      const pal     = PALETTES[bi % PALETTES.length];
+      const capLift = (Math.sin(t * 0.88 + bi * 1.3) * 0.5 + 0.5);
+      drawNailPolish(gn, capLift, pal);
+      if (capLift > 0.52 && nailParts.filter(p => p.bi === bi).length < 6 && Math.random() < 0.14) {
+        const np = spawnNailPart(gn, pal);
+        np.bi = bi;
+        nailParts.push(np);
+      }
+    });
 
-    // Nail sparkles (emit when cap is open)
-    if (capLift > 0.52 && nailParts.length < 22 && Math.random() < 0.18) {
-      nailParts.push(spawnNailPart(gn));
-    }
     for (let i = nailParts.length - 1; i >= 0; i--) {
       const np = nailParts[i];
       np.age += 0.013;
