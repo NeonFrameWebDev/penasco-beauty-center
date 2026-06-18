@@ -831,6 +831,118 @@ nav.site-nav.nav-scrolled .nav-hamburger span { background: var(--text); }
 
 .ss-sep { margin: 0 2px; }
 
+/* ── Before & After ───────────────────────────────────────── */
+#transformaciones { background: var(--bg); }
+
+.section-sub {
+  font-family: var(--font-body);
+  font-size: clamp(0.88rem, 1.8vw, 0.98rem);
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  max-width: 520px;
+}
+
+.ba-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 769px) {
+  .ba-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.ba-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  cursor: ew-resize;
+  user-select: none;
+  touch-action: none;
+  box-shadow: 0 8px 36px rgba(31, 15, 26, 0.18);
+}
+
+.ba-before,
+.ba-after {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
+.ba-before img,
+.ba-after img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.ba-after {
+  clip-path: inset(0 50% 0 0);
+  will-change: clip-path;
+}
+
+/* Divider handle */
+.ba-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  background: #fff;
+  z-index: 10;
+  pointer-events: none;
+  box-shadow: 0 0 8px rgba(0,0,0,0.40);
+  will-change: left;
+}
+
+.ba-grip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 14px rgba(31, 15, 26, 0.30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  color: var(--rose);
+}
+
+.ba-grip svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Before / After labels */
+.ba-tag {
+  position: absolute;
+  bottom: 14px;
+  font-family: var(--font-body);
+  font-size: 0.70rem;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(26, 11, 21, 0.58);
+  padding: 4px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 11;
+}
+
+.ba-tag-before { left: 14px; }
+.ba-tag-after  { right: 14px; }
+
 /* ── Services ─────────────────────────────────────────────── */
 #servicios {
   background: var(--surface);
