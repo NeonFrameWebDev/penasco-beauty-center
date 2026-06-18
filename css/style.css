@@ -460,6 +460,20 @@ nav.site-nav.nav-scrolled .nav-hamburger span { background: var(--text); }
   flex-wrap: wrap;
 }
 
+@media (max-width: 768px) {
+  #hero { align-items: center; }
+  .hero-overlay { background: rgba(26, 11, 21, 0.52); }
+  .hero-content {
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
+    text-align: center;
+  }
+  .hero-h1 { max-width: 100%; font-size: clamp(1.9rem, 6.5vw, 2.6rem); }
+  .hero-sub { max-width: 100%; }
+  .hero-rule { margin-left: auto; margin-right: auto; }
+  .hero-ctas { justify-content: center; }
+}
+
 @media (min-width: 1024px) {
   .hero-content {
     max-width: 68%;
