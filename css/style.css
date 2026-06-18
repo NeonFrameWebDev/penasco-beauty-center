@@ -228,7 +228,7 @@ nav.site-nav.nav-scrolled .nav-hamburger span { background: var(--text); }
   font-weight: 600;
   font-size: clamp(1.1rem, 2.5vw, 1.4rem);
   letter-spacing: 0.04em;
-  color: #fff;
+  color: var(--rose);
   text-transform: none;
   font-style: normal;
 }
@@ -237,7 +237,7 @@ nav.site-nav.nav-scrolled .nav-hamburger span { background: var(--text); }
   font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(0.62rem, 1.2vw, 0.75rem);
-  color: rgba(255, 255, 255, 0.80);
+  color: rgba(184, 92, 114, 0.75);
   letter-spacing: 0.12em;
   text-transform: none;
 }
