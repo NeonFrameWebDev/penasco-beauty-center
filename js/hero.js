@@ -88,7 +88,7 @@
     }
     const count  = 5;
     const u      = clamp(Math.min(W, H) * 0.052, 12, 32);
-    const cy     = H * 0.97;
+    const cy     = H * 0.95;
     const padL   = W * 0.08;
     const padR   = W * 0.08;
     const usable = W - padL - padR;
