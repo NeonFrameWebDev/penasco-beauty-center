@@ -162,63 +162,103 @@
       }
 
       function drawComb(x, t) {
-        // Portrait comb: handle at bottom, teeth going up
-        const toothCount = 18;
-        const tw   = Math.max(2, CW * 0.005);
-        const tgap = Math.max(2.5, CW * 0.0075);
-        const combW = toothCount * tw + (toothCount - 1) * tgap;
-        const halfW = combW / 2;
+        // Portrait comb — wide head + rounded teeth at top, organic handle at bottom
+        const combW  = Math.max(52, CW * 0.155);
+        const halfW  = combW / 2;
+        const cTop   = CH * 0.04;                       // top of teeth
+        const cBot   = CH * 0.96;                       // bottom of handle
+        const totH   = cBot - cTop;
 
-        const backY  = CH * 0.42;                       // where back bar sits
-        const backH  = Math.max(5, CH * 0.018);         // back bar thickness
-        const toothH = backY - Math.max(4, CH * 0.01);  // tooth length
-        const hW     = Math.max(8, combW * 0.40);       // handle width (narrower)
-        const hH     = CH - backY - backH;              // handle height
+        const toothH = totH * 0.46;                     // teeth section height
+        const backH  = Math.max(7, totH * 0.07);        // back-bar height
+        const backY  = cTop + toothH;                   // y of back bar
+        const handY  = backY + backH;                   // y where handle starts
+        const handH  = cBot - handY;                    // handle height
 
-        // Glow over tooth area
-        const glow = ctx.createRadialGradient(x, backY * 0.45, 0, x, backY * 0.45, halfW * 2.2);
-        glow.addColorStop(0, rgba(ROSE, 0.16));
-        glow.addColorStop(1, rgba(ROSE, 0));
-        ctx.fillStyle = glow;
-        ctx.fillRect(x - halfW * 2.2, 0, halfW * 4.4, backY);
+        // Tooth geometry — 16 capsule-top teeth, gaps transparent
+        const N    = 16;
+        const tw   = combW * 0.60 / N;
+        const tgap = combW * 0.40 / (N - 1);
+        const tR   = tw / 2;                            // fully rounded top
 
-        // Handle
-        const hGrad = ctx.createLinearGradient(x - hW / 2, 0, x + hW / 2, 0);
-        hGrad.addColorStop(0,    rgba([148, 52, 78],  0.96));
-        hGrad.addColorStop(0.45, rgba(ROSE,           1.00));
-        hGrad.addColorStop(1,    rgba(ROSE_LT,        0.88));
-        ctx.fillStyle = hGrad;
-        rrect(ctx, x - hW / 2, backY + backH, hW, hH, Math.min(hW / 2, 14));
+        // ── Glow behind tooth area ──────────────────────────────
+        const gR = halfW * 1.9;
+        const gl = ctx.createRadialGradient(x, cTop + toothH * 0.38, 0, x, cTop + toothH * 0.38, gR);
+        gl.addColorStop(0, rgba(ROSE, 0.22));
+        gl.addColorStop(1, rgba(ROSE, 0));
+        ctx.fillStyle = gl;
+        ctx.fillRect(x - gR, cTop, gR * 2, toothH);
+
+        // ── Handle — organic bezier shape ───────────────────────
+        const hConn  = combW * 0.56;   // width where handle meets back bar
+        const hWaist = combW * 0.26;   // narrowest neck
+        const hBulge = combW * 0.68;   // widest grip
+        ctx.fillStyle = rgba(ROSE, 0.97);
+        ctx.beginPath();
+        // left side, top → bottom
+        ctx.moveTo(x - hConn / 2,  handY);
+        ctx.bezierCurveTo(
+          x - hConn / 2,  handY + handH * 0.10,
+          x - hWaist / 2, handY + handH * 0.30,
+          x - hWaist / 2, handY + handH * 0.42
+        );
+        ctx.bezierCurveTo(
+          x - hWaist / 2, handY + handH * 0.54,
+          x - hBulge / 2, handY + handH * 0.64,
+          x - hBulge / 2, handY + handH * 0.78
+        );
+        ctx.bezierCurveTo(
+          x - hBulge / 2, handY + handH * 0.91,
+          x - combW * 0.09, cBot,
+          x,               cBot
+        );
+        // right side, bottom → top (mirror)
+        ctx.bezierCurveTo(
+          x + combW * 0.09, cBot,
+          x + hBulge / 2, handY + handH * 0.91,
+          x + hBulge / 2, handY + handH * 0.78
+        );
+        ctx.bezierCurveTo(
+          x + hBulge / 2, handY + handH * 0.64,
+          x + hWaist / 2, handY + handH * 0.54,
+          x + hWaist / 2, handY + handH * 0.42
+        );
+        ctx.bezierCurveTo(
+          x + hWaist / 2, handY + handH * 0.30,
+          x + hConn / 2,  handY + handH * 0.10,
+          x + hConn / 2,  handY
+        );
+        ctx.closePath();
         ctx.fill();
 
-        // Back bar (connects handle to teeth)
-        const bGrad = ctx.createLinearGradient(x - halfW, 0, x + halfW, 0);
-        bGrad.addColorStop(0,   rgba(ROSE,             0.92));
-        bGrad.addColorStop(0.5, rgba([253, 218, 230],  1.00));
-        bGrad.addColorStop(1,   rgba(ROSE_LT,          0.92));
-        ctx.fillStyle = bGrad;
-        rrect(ctx, x - halfW, backY, combW, backH, backH / 2);
+        // ── Back bar ────────────────────────────────────────────
+        ctx.fillStyle = rgba(ROSE, 0.97);
+        rrect(ctx, x - halfW, backY, combW, backH, 3);
         ctx.fill();
 
-        // Teeth — vertical, going up from back bar
-        const rate = dragging ? 0.14 : 0.016;
-        for (let i = 0; i < toothCount; i++) {
+        // ── Teeth (capsule tops, flat bottom into back bar) ─────
+        ctx.fillStyle = rgba(ROSE, 0.97);
+        const rate = dragging ? 0.12 : 0.010;
+        for (let i = 0; i < N; i++) {
           const tx = x - halfW + i * (tw + tgap);
-          const ty = backY - toothH;
+          const bY = backY + backH * 0.45;  // bottom of tooth (inside back bar)
 
-          const tGrad = ctx.createLinearGradient(0, ty, 0, backY);
-          tGrad.addColorStop(0,    rgba(GOLD_LT, 0));
-          tGrad.addColorStop(0.22, rgba(GOLD_LT, 0.72));
-          tGrad.addColorStop(1,    rgba(GOLD,    0.96));
-          ctx.fillStyle = tGrad;
-          rrect(ctx, tx, ty, tw, toothH, tw / 2);
+          ctx.beginPath();
+          ctx.moveTo(tx + tR, cTop);
+          ctx.lineTo(tx + tw - tR, cTop);
+          ctx.quadraticCurveTo(tx + tw, cTop, tx + tw, cTop + tR);
+          ctx.lineTo(tx + tw, bY);
+          ctx.lineTo(tx, bY);
+          ctx.lineTo(tx, cTop + tR);
+          ctx.quadraticCurveTo(tx, cTop, tx + tR, cTop);
+          ctx.closePath();
           ctx.fill();
 
           // Sparkles from tooth tips
           if (Math.random() < rate && sparkles.length < 60) {
             spawnSparkle(
-              tx + tw / 2 + rand(-tw, tw),
-              ty + rand(0, 6)
+              tx + tw / 2 + rand(-tw * 0.8, tw * 0.8),
+              cTop + rand(2, toothH * 0.18)
             );
           }
         }
